@@ -22,8 +22,9 @@ use App\Http\Controllers\ClientController;
 // });
 
 Route::post('/professions', [ProfessionController::class, 'store']);
+Route::get('/professions' , [ProfessionController::class, 'index']);
 
 Route::post('/addresses', [AddressController::class, 'store']);
+Route::get('/addresses' , [AddressController::class, 'index']);
 
-Route::post('/clients', [ClientController::class, 'store']);
-Route::get('/clients', [ClientController::class, 'index']);
+Route::apiResource('clients', ClientController::class);

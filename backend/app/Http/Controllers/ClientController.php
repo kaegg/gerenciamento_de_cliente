@@ -7,6 +7,7 @@ use App\Models\Address;
 use App\Models\Profession;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 
 class ClientController extends Controller
 {
@@ -56,16 +57,21 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\StoreClientRequest  $request
+     * @param  \App\Http\Requests\StoreClientRequest;  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreClientRequest $request)
     {
         $validated = $request->validated();
 
-        $profession = Profession::firstOrCreate([
-            'profession_name' => $validated['profession_name']
-        ]);
+        $profession = Profession::where('profession_name', $validated['profession_name'])->first();
+
+        if (!$profession) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profissão inválida.',
+            ], 422);
+        }
 
         $address = Address::firstOrCreate([
             'address'      => $validated['address'],
@@ -122,13 +128,51 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateClientRequest  $request
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(UpdateClientRequest $request, Client $client)
     {
-        //
+        $validated = $request->validated();
+
+        $profession = Profession::where('profession_name', $validated['profession_name'])->first();
+
+        if (!$profession) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Profissão inválida.',
+            ], 422);
+        }
+
+        $address = Address::firstOrCreate([
+            'address'      => $validated['address'],
+            'number'       => $validated['number'],
+            'neighborhood' => $validated['neighborhood'],
+            'complement'   => $validated['complement'],
+            'city'         => $validated['city'],
+            'state'        => $validated['state'],
+        ]);
+
+        $client->update([
+            'name'          => $validated['name'],
+            'birth_date'    => $validated['birth_date'],
+            'person_type'   => $validated['person_type'],
+            'cpf_cnpj'      => $validated['cpf_cnpj'],
+            'email'         => $validated['email'],
+            'phone'         => $validated['phone'],
+            'address_id'    => $address->id,
+            'profession_id' => $profession->id,
+            'active'        => $validated['active'],
+        ]);
+
+        $client->load(['address', 'profession']);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Cliente atualizado com sucesso!',
+            'client'  => $client
+        ], 200);
     }
 
     /**

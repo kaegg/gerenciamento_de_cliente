@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name')->nullable(false);
             $table->date('birth_date')->nullable(false);
             $table->enum('person_type', ['F', 'J'])->nullable(false);
-            $table->char('cpf_cnpj', 14)->nullable(false);
+            $table->char('cpf_cnpj', 18)->nullable(false);
             $table->string('email')->nullable(false);
             $table->string('phone')->nullable(false);
             $table->foreignId('address_id')

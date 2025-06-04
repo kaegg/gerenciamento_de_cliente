@@ -53,8 +53,8 @@ class AddressController extends Controller
         ]);
 
         return response()->json([
-            'status'     => true,
-            'message'    => "Endereço criado com sucesso!",
+            'status'  => true,
+            'message' => "Endereço criado com sucesso!",
             'address' => $address
         ], 201);
     }

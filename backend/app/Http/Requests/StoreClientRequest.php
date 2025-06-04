@@ -32,6 +32,7 @@ class StoreClientRequest extends FormRequest
             'cpf_cnpj'        => [
                 'required',
                 'string',
+                'max:18',
                 new validateCpfCnpj(),
                 Rule::unique('clients')->where(function($query){
                     return $query->where('email', $this->input('email'));
@@ -66,7 +67,7 @@ class StoreClientRequest extends FormRequest
 
             'cpf_cnpj.required'      => 'O CPF ou CNPJ é obrigatório.',
             'cpf_cnpj.string'        => 'O CPF ou CNPJ deve ser um texto.',
-            'cpf_cnpj.size'          => 'O CPF ou CNPJ deve ter exatamente 14 caracteres (sem pontos ou traços).',
+            'cpf_cnpj.size'          => 'O CPF ou CNPJ deve conter no máximo 18 caractere, incluindo pontos.',
             'cpf_cnpj.unique'        => 'Já existe um cliente cadastrado com este CPF/CNPJ e e-mail.',
 
             'email.required'         => 'O e-mail é obrigatório.',

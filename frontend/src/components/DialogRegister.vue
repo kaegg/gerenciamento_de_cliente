@@ -1,6 +1,6 @@
 <template>
     <div v-if="visible" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Cadastro de Cliente ({{ props.modo }})</h5>
@@ -8,146 +8,161 @@
                 </div>
 
                 <form @submit.prevent="handleSubmit" class="modal-body">
-                    <div class="row">
-                        <!-- Nome -->
-                        <div class="mb-3 col-md-6">
+                    <!-- Etapa 1: Dados Pessoais -->
+                    <div v-if="etapaAtual === 1">
+                        <div class="mb-3">
                             <label for="nome" class="form-label">Nome *</label>
-                            <input id="nome" v-model="form.nome" type="text" class="form-control" required />
+                            <input id="nome" v-model="form.nome" type="text" class="form-control" />
+                            <div v-if="erros.nome" class="text-danger">{{ erros.nome }}</div>
                         </div>
 
-                        <!-- Data de Nascimento -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="dataNascimento" class="form-label">Data de Nascimento *</label>
-                            <input id="dataNascimento" v-model="form.dataNascimento" type="date" class="form-control"
-                                required />
+                            <input id="dataNascimento" v-model="form.dataNascimento" type="date" class="form-control" />
+                            <div v-if="erros.dataNascimento" class="text-danger">{{ erros.dataNascimento }}</div>
                         </div>
 
-                        <!-- Tipo Pessoa -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="tipoPessoa" class="form-label">Tipo Pessoa *</label>
-                            <select id="tipoPessoa" v-model="form.tipoPessoa" class="form-select" required>
-                                <option value="F" selected>Física</option>
+                            <select id="tipoPessoa" v-model="form.tipoPessoa" class="form-select">
+                                <option value="F">Física</option>
                                 <option value="J">Jurídica</option>
                             </select>
                         </div>
 
-                        <!-- CPF/CNPJ -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="cpfCnpj" class="form-label">CPF/CNPJ *</label>
-                            <input id="cpfCnpj" v-model="form.cpfCnpj" type="text" maxlength="18" @input="formataCpfCnpj" class="form-control" required />
+                            <input id="cpfCnpj" v-model="form.cpfCnpj" type="text" maxlength="18" @input="formataCpfCnpj" class="form-control" />
+                            <div v-if="erros.cpfCnpj" class="text-danger">{{ erros.cpfCnpj }}</div>
                         </div>
 
-                        <!-- Email -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="email" class="form-label">E-mail *</label>
-                            <input id="email" v-model="form.email" type="email" class="form-control" required />
+                            <input id="email" v-model="form.email" type="email" class="form-control" />
+                            <div v-if="erros.email" class="text-danger">{{ erros.email }}</div>
                         </div>
 
-                        <!-- Telefone -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="telefone" class="form-label">Telefone *</label>
-                            <input id="telefone" v-model="form.telefone" type="tel"  @input="formataTelefone" class="form-control" required />
+                            <input id="telefone" v-model="form.telefone" type="tel" @input="formataTelefone" class="form-control" />
+                            <div v-if="erros.telefone" class="text-danger">{{ erros.telefone }}</div>
                         </div>
 
-                        <!-- Status -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="status" class="form-label">Status *</label>
-                            <select id="status"
-                                v-model="form.status"
-                                class="form-select"
-                                :disabled="props.modo === 'cadastro'"
-                                required
-                            >
+                            <select id="status" v-model="form.status" class="form-select" :disabled="props.modo === 'cadastro'">
                                 <option value="true">Ativo</option>
                                 <option value="false">Inativo</option>
                             </select>
                         </div>
+                    </div>
 
-                        <!-- Nome Profissão -->
-                        <div class="mb-3 col-md-6">
-                            <label for="nomeProfissao" class="form-label">Nome da Profissão *</label>
-                            <input id="nomeProfissao" v-model="form.nomeProfissao" type="text" class="form-control"
-                                required />
-                        </div>
-
-                        <!-- Endereço -->
-                        <div class="mb-3 col-md-6">
+                    <!-- Etapa 2: Endereço -->
+                    <div v-if="etapaAtual === 2">
+                        <div class="mb-3">
                             <label for="endereco" class="form-label">Endereço *</label>
-                            <input id="endereco" v-model="form.endereco" type="text" class="form-control" required />
+                            <input id="endereco" v-model="form.endereco" type="text" class="form-control" />
+                            <div v-if="erros.endereco" class="text-danger">{{ erros.endereco }}</div>
                         </div>
 
-                        <!-- Número -->
-                        <div class="mb-3 col-md-3">
+                        <div class="mb-3">
                             <label for="numero" class="form-label">Número *</label>
-                            <input id="numero" v-model="form.numero" type="text" class="form-control" required />
+                            <input id="numero" v-model="form.numero" type="text" class="form-control" />
+                            <div v-if="erros.numero" class="text-danger">{{ erros.numero }}</div>
                         </div>
 
-                        <!-- Complemento -->
-                        <div class="mb-3 col-md-3">
+                        <div class="mb-3">
                             <label for="complemento" class="form-label">Complemento</label>
                             <input id="complemento" v-model="form.complemento" type="text" class="form-control" />
                         </div>
 
-                        <!-- Bairro -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3">
                             <label for="bairro" class="form-label">Bairro *</label>
-                            <input id="bairro" v-model="form.bairro" type="text" class="form-control" required />
+                            <input id="bairro" v-model="form.bairro" type="text" class="form-control" />
+                            <div v-if="erros.bairro" class="text-danger">{{ erros.bairro }}</div>
                         </div>
 
-                        <!-- Cidade -->
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3">
                             <label for="cidade" class="form-label">Cidade *</label>
-                            <input id="cidade" v-model="form.cidade" type="text" class="form-control" required />
+                            <input id="cidade" v-model="form.cidade" type="text" class="form-control" />
+                            <div v-if="erros.cidade" class="text-danger">{{ erros.cidade }}</div>
                         </div>
 
-                        <!-- UF -->
-                        <div class="mb-3 col-md-2">
+                        <div class="mb-3">
                             <label for="uf" class="form-label">UF *</label>
-                            <select id="uf" v-model="form.uf" class="form-select" required>
+                            <select id="uf" v-model="form.uf" class="form-select">
                                 <option value="" disabled>Selecione</option>
                                 <option v-for="estado in ufs" :key="estado" :value="estado">{{ estado }}</option>
                             </select>
+                            <div v-if="erros.uf" class="text-danger">{{ erros.uf }}</div>
                         </div>
                     </div>
 
-                    <!-- Botões -->
+                    <!-- Etapa 3: Profissão -->
+                    <div v-if="etapaAtual === 3">
+                        <div class="mb-3">
+                            <label for="nomeProfissao" class="form-label">Profissão *</label>
+                            <select id="nomeProfissao" v-model="form.nomeProfissao" class="form-select">
+                                <option value="">Selecione</option>
+                                <option v-for="profissao in profissoes" :key="profissao" :value="profissao">{{ profissao }}</option>
+                            </select>
+                            <div v-if="erros.nomeProfissao" class="text-danger">{{ erros.nomeProfissao }}</div>
+                        </div>
+                    </div>
+
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="handleCancel">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-outline-danger" @click="handleCancel">Cancelar</button>
+                        <button type="button" class="btn btn-outline-primary" v-if="etapaAtual > 1" @click="etapaAtual--">Voltar</button>
+                        <button type="button" class="btn btn-outline-primary" v-if="etapaAtual < 3" @click="etapaAtual++">Avançar</button>
+                        <button type="submit" class="btn btn-success" v-if="etapaAtual === 3">Salvar</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { reactive, defineEmits, defineProps, watch } from 'vue';
+    import { reactive, defineProps, defineEmits, watch, ref, onMounted } from 'vue';
+    import axios from 'axios';
 
     const props = defineProps({
         visible: Boolean,
-        modo   : {
-            type   : String,
-            default: 'cadastro',
-        },
-        cliente: {
-            type   : Object,
-            default: () => ({})
+        modo   : String,
+        cliente: Object
+    });
+
+    const emit       = defineEmits(['close', 'save']);
+    const etapaAtual = ref(1);
+    const ufs        = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
+    const profissoes = ref([]);
+    const form       = reactive({});
+    const erros      = reactive({});
+
+    onMounted(async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/professions');
+
+            if (response.data.status) {
+
+                profissoes.value = response.data.professions.map(profissao => profissao.profession_name);
+
+            } else {
+                
+                alert('Não foi possível recuperar os dados de profissão');
+
+            }
+        } catch (error) {
+            alert('Erro ao buscar profissões: ' + error);
         }
     });
 
-    const emit = defineEmits(['close', 'save']);
-
-    const ufs = [
-        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-    ]
-
-    const form = reactive({});
-
     watch(() => props.visible, (visivel) => {
-        if (visivel) {
+        if(visivel) {
+            etapaAtual.value = 1;
+        
             if (props.modo === 'edição' && props.cliente) {
+                form.id             = props.cliente.id || null
                 form.nome           = props.cliente.name || '';
                 form.dataNascimento = props.cliente.birth_date || '';
                 form.tipoPessoa     = props.cliente.person_type || 'F';
@@ -166,6 +181,7 @@
                 formataCpfCnpj();
                 formataTelefone();
             } else {
+                form.id             = null;
                 form.nome           = '';
                 form.dataNascimento = '';
                 form.tipoPessoa     = 'F';
@@ -184,90 +200,81 @@
         }
     });
 
-    // watch(() => props.modo, (novoModo) => {
-    //     if (novoModo === 'cadastro') {
-    //         form.status = 'true';
-    //     }
-    // });
-
-    // watch(() => props.visible, (visivel) => {
-    //     if (visivel) {
-    //         if (props.modo === 'edição' && props.cliente) {
-    //             Object.assign(form, props.cliente);
-    //         } else {
-    //             form.status = 'true';
-    //             form.tipoPessoa = 'F';
-    //         }
-    //     }
-    // });
-
     function formataCpfCnpj() {
-        let val = form.cpfCnpj.replace(/\D/g, '')
+        let val = form.cpfCnpj.replace(/\D/g, '');
 
         if (form.tipoPessoa === 'F') {
 
-            val = val.substring(0, 11)
-            val = val.replace(/(\d{3})(\d)/, '$1.$2')
-            val = val.replace(/(\d{3})(\d)/, '$1.$2')
-            val = val.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-
-        } else if (form.tipoPessoa === 'J') {
-
-            val = val.substring(0, 14)
-            val = val.replace(/^(\d{2})(\d)/, '$1.$2')
-            val = val.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-            val = val.replace(/\.(\d{3})(\d)/, '.$1/$2')
-            val = val.replace(/(\d{4})(\d)/, '$1-$2')
+            val = val.substring(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            
+        } else {
+            
+            val = val.substring(0, 14).replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1/$2').replace(/(\d{4})(\d)/, '$1-$2');
 
         }
 
-        form.cpfCnpj = val
+        form.cpfCnpj = val;
     }
 
     function formataTelefone() {
         let val = form.telefone.replace(/\D/g, '');
 
-        if(val.length > 11) val = val.substring(0, 11);
+        if (val.length > 11){
+            
+            val = val.substring(0, 11);
 
-        if(val.length <= 10){
-            val = val.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
-        }else{
-            val = val.replace(/^(\d{2})(\d{5})(\d{0,4})$/, '($1) $2-$3');
         }
 
-        form.telefone = val;
+        form.telefone = val.length <= 10 ? val.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3') : val.replace(/^(\d{2})(\d{5})(\d{0,4})$/, '($1) $2-$3');
     }
 
+    function limparFormulario() {
+        Object.keys(form).forEach(key => form[key] = '');
+        Object.keys(erros).forEach(key => erros[key] = '');
+    }
 
-    function validateForm() {
-        for (const key in form) {
-            if (key !== 'complemento' && (!form[key] || form[key].toString().trim() === '')) {
-                return false;
-            }
+    function validarEtapa() {
+        Object.keys(erros).forEach(key => erros[key] = '');
+
+        if (etapaAtual.value === 1) {
+
+            if (!form.nome)                                                     erros.nome           = 'Campo obrigatório';
+            if (!form.dataNascimento)                                           erros.dataNascimento = 'Campo obrigatório';
+            if (!form.cpfCnpj || form.cpfCnpj.replace(/\D/g, '').length < 11)   erros.cpfCnpj        = 'CPF/CNPJ inválido';
+            if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email))              erros.email          = 'E-mail inválido';
+            if (!form.telefone || form.telefone.replace(/\D/g, '').length < 10) erros.telefone       = 'Telefone inválido';
+
+        } else if (etapaAtual.value === 2) {
+
+            if (!form.endereco) erros.endereco = 'Campo obrigatório';
+            if (!form.numero)   erros.numero   = 'Campo obrigatório';
+            if (!form.bairro)   erros.bairro   = 'Campo obrigatório';
+            if (!form.cidade)   erros.cidade   = 'Campo obrigatório';
+            if (!form.uf)       erros.uf       = 'Campo obrigatório';
+        
+        } else if (etapaAtual.value === 3) {
+        
+            if (!form.nomeProfissao) erros.nomeProfissao = 'Campo obrigatório';
+        
         }
 
-        return true;
-    }
-
-    function limparFormulario(){
-        Object.keys(form).forEach(key => {
-            form[key] = '';
-        });
+        return Object.values(erros).every(err => !err);
     }
 
     function handleSubmit() {
-        if (!validateForm()) {
-            alert('Por favor, preencha todos os campos obrigatórios.');
-            return;
+        if (validarEtapa()){
+            emit('save', { ...form });
         }
-
-        emit('save', { ...form });
-
-        // limparFormulario();
     }
 
-    function handleCancel(){
+    function handleCancel() {
         limparFormulario();
         emit('close');
     }
 </script>
+
+<style scoped>
+    .text-danger {
+        font-size: 0.9em;
+    }
+</style>
