@@ -288,7 +288,7 @@ Retorno:
 }
 ```
 
-PUT: http://localhost:8000/api/clients
+PUT: http://localhost:8000/api/clients/{id}
 
 Requisição:
 
