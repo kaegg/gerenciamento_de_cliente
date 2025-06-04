@@ -12,7 +12,7 @@
                     <div v-if="etapaAtual === 1">
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome *</label>
-                            <input id="nome" v-model="form.nome" type="text" class="form-control" />
+                            <input id="nome" v-model="form.nome" type="text" class="form-control" maxlength="255" />
                             <div v-if="erros.nome" class="text-danger">{{ erros.nome }}</div>
                         </div>
 
@@ -38,7 +38,7 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail *</label>
-                            <input id="email" v-model="form.email" type="email" class="form-control" />
+                            <input id="email" v-model="form.email" type="email" class="form-control" maxlength="255" />
                             <div v-if="erros.email" class="text-danger">{{ erros.email }}</div>
                         </div>
 
@@ -61,7 +61,7 @@
                     <div v-if="etapaAtual === 2">
                         <div class="mb-3">
                             <label for="endereco" class="form-label">Endereço *</label>
-                            <input id="endereco" v-model="form.endereco" type="text" class="form-control" />
+                            <input id="endereco" v-model="form.endereco" type="text" class="form-control" maxlength="255" />
                             <div v-if="erros.endereco" class="text-danger">{{ erros.endereco }}</div>
                         </div>
 
@@ -73,18 +73,18 @@
 
                         <div class="mb-3">
                             <label for="complemento" class="form-label">Complemento</label>
-                            <input id="complemento" v-model="form.complemento" type="text" class="form-control" />
+                            <input id="complemento" v-model="form.complemento" type="text" class="form-control" maxlength="255" />
                         </div>
 
                         <div class="mb-3">
                             <label for="bairro" class="form-label">Bairro *</label>
-                            <input id="bairro" v-model="form.bairro" type="text" class="form-control" />
+                            <input id="bairro" v-model="form.bairro" type="text" class="form-control" maxlength="255" />
                             <div v-if="erros.bairro" class="text-danger">{{ erros.bairro }}</div>
                         </div>
 
                         <div class="mb-3">
                             <label for="cidade" class="form-label">Cidade *</label>
-                            <input id="cidade" v-model="form.cidade" type="text" class="form-control" />
+                            <input id="cidade" v-model="form.cidade" type="text" class="form-control" maxlength="255" />
                             <div v-if="erros.cidade" class="text-danger">{{ erros.cidade }}</div>
                         </div>
 
